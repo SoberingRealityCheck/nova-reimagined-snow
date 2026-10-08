@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+      <Filters>
+        <!-- Only show WARN and above -->
+        <ThresholdFilter level="WARN" onMatch="NEUTRAL" onMismatch="DENY" />
+        <!-- No data fixer registered for <entity> — normal for all mod entities, unfixable noise -->
+        <RegexFilter regex="No data fixer registered for .*" onMatch="DENY" onMismatch="NEUTRAL" />
+        <!-- refmap could not be read — dev environment artifact, harmless in production -->
+        <RegexFilter regex="Reference map '.*\.refmap\.json' for .* could not be read\..*" onMatch="DENY" onMismatch="NEUTRAL" />
+      </Filters>
+    </Console>
+    <File name="File" fileName="logs/latest.log" append="false">
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+      <Filters>
+        <ThresholdFilter level="WARN" onMatch="NEUTRAL" onMismatch="DENY" />
+        <RegexFilter regex="No data fixer registered for .*" onMatch="DENY" onMismatch="NEUTRAL" />
+        <RegexFilter regex="Reference map '.*\.refmap\.json' for .* could not be read\..*" onMatch="DENY" onMismatch="NEUTRAL" />
+      </Filters>
+    </File>
+    <File name="CompSnow" fileName="logs/compsnow.log" append="false">
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+    </File>
+  </Appenders>
+  <Loggers>
+    <Logger name="compsnow" level="WARN" additivity="false">
+      <AppenderRef ref="CompSnow" />
+    </Logger>
+    <Root level="INFO">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="File" />
+    </Root>
+  </Loggers>
+</Configuration>
