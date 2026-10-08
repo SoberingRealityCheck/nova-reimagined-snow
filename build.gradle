@@ -23,6 +23,10 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.compilerArgs << "-Xmaxerrs" << "2000"
 }
 
+base {
+	archivesName = "compsnow"
+}
+
 java {
 	withSourcesJar()
 	sourceCompatibility = JavaVersion.VERSION_25
