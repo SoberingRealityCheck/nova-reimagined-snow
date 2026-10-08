@@ -53,3 +53,7 @@ up to 1024 chunks with margin.
   DH regenerates LODs.
 - Client-side only — no server-side installation required.
 - Dedicated `compsnow.log` output file available during development via `log4j2.xml`.
+
+## 1.0.3+26.2.1 (26.2 port)
+- Sea level for the snow check now comes from the client level, not a fixed 63.
+- Homepage, sources and issues point at the port. Added the port author. License credits both.

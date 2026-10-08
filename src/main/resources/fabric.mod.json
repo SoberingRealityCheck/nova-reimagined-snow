@@ -5,12 +5,13 @@
   "name": "Nova Reimagined Snow",
   "description": "Provides accurate per-block biome snow detection and snow texture variant support for the Nova Reimagined shader pack. Eliminates snow tinting bleed across biome borders and resolves snow surface textures from your active resource packs for use by the shader.",
   "authors": [
-    "ItsThatNova"
+    "ItsThatNova",
+    "SoberingRealityCheck (26.2 port)"
   ],
   "contact": {
-    "homepage": "https://github.com/ItsThatNova/complementary-snow",
-    "sources": "https://github.com/ItsThatNova/complementary-snow",
-    "issues": "https://github.com/ItsThatNova/complementary-snow/issues"
+    "homepage": "https://github.com/SoberingRealityCheck/nova-reimagined-snow",
+    "sources": "https://github.com/SoberingRealityCheck/nova-reimagined-snow",
+    "issues": "https://github.com/SoberingRealityCheck/nova-reimagined-snow/issues"
   },
   "license": "MIT",
   "icon": "assets/compsnow/icon.png",

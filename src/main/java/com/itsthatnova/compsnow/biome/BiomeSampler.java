@@ -44,8 +44,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * DH chunk classification samples the highest-Y data point at the chunk midpoint.
  */
 public class BiomeSampler {
-    /** 26.x Biome.getPrecipitationAt needs a sea level. Overworld default. HACK: not read from the level. */
-    private static final int SEA_LEVEL = 63;
+    /**
+     * 26.x Biome.getPrecipitationAt needs a sea level. Read it from the client level.
+     * Falls back to the overworld default (63) before a level exists, and for DH
+     * columns from another dimension (HACK: we do not look up that dimension's level).
+     */
+    private static int seaLevel() {
+        var level = Minecraft.getInstance().level;
+        return level != null ? level.getSeaLevel() : 63;
+    }
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger("compsnow.biomesampler");
@@ -395,7 +402,7 @@ public class BiomeSampler {
         if (wrapped instanceof Holder<?> registryEntry) {
             Object value = registryEntry.value();
             if (value instanceof Biome biome) {
-                boolean precipSnow = biome.getPrecipitationAt(new BlockPos(0, sampleY, 0), SEA_LEVEL) == Biome.Precipitation.SNOW;
+                boolean precipSnow = biome.getPrecipitationAt(new BlockPos(0, sampleY, 0), seaLevel()) == Biome.Precipitation.SNOW;
                 if (!precipSnow) {
                     DH_CLASSIFIED_REGISTRY_ENTRY.incrementAndGet();
                     emitDhMidpointBiomeLog(chunkX, chunkZ, biomeName, registryKeyString, wrappedType, 0.0f, "registry-entry-fallback");
@@ -413,7 +420,7 @@ public class BiomeSampler {
 
         // --- Pass 4: raw Biome object fallback ---
         if (wrapped instanceof Biome biome) {
-            boolean precipSnow = biome.getPrecipitationAt(new BlockPos(0, sampleY, 0), SEA_LEVEL) == Biome.Precipitation.SNOW;
+            boolean precipSnow = biome.getPrecipitationAt(new BlockPos(0, sampleY, 0), seaLevel()) == Biome.Precipitation.SNOW;
             if (!precipSnow) {
                 DH_CLASSIFIED_BIOME_OBJECT.incrementAndGet();
                 emitDhMidpointBiomeLog(chunkX, chunkZ, biomeName, registryKeyString, wrappedType, 0.0f, "biome-object-fallback");
@@ -496,7 +503,7 @@ public class BiomeSampler {
         try {
             BlockPos pos = new BlockPos(worldX, SAMPLE_Y, worldZ);
             Biome biome = world.getBiome(pos).value();
-            if (biome.getPrecipitationAt(pos, SEA_LEVEL) != Biome.Precipitation.SNOW) return 0.0f;
+            if (biome.getPrecipitationAt(pos, seaLevel()) != Biome.Precipitation.SNOW) return 0.0f;
             // Compute intensity from temperature. If precipitation says SNOW but
             // temperature is warm (seasons mod override), fall back to 1.0 so
             // the season-forced snow still draws at full coverage.
@@ -512,7 +519,7 @@ public class BiomeSampler {
         try {
             BlockPos pos = new BlockPos(worldX, SAMPLE_Y, worldZ);
             Biome biome = world.getBiome(pos).value();
-            if (biome.getPrecipitationAt(pos, SEA_LEVEL) != Biome.Precipitation.SNOW) return 0.0f;
+            if (biome.getPrecipitationAt(pos, seaLevel()) != Biome.Precipitation.SNOW) return 0.0f;
             float intensity = computeSnowIntensity(altitudeAdjustedTemp(biome.getBaseTemperature(), pos.getY()));
             return intensity > 0.0f ? intensity : 1.0f;
         } catch (Exception e) {
